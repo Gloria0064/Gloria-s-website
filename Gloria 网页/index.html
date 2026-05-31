@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Gloria's World</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+            background: #0a0a1a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ===== Animated Starfield Background ===== */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== Navigation ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 26, 0.08);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            opacity: 0.4;
+            transition: opacity 0.4s ease,
+                        background 0.45s ease,
+                        backdrop-filter 0.45s ease,
+                        border-color 0.45s ease;
+        }
+
+        nav:hover {
+            opacity: 1;
+            background: rgba(10, 10, 26, 0.55);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        nav .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9a8d4, #c084fc, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        nav .nav-links a {
+            color: #c0c0d0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #f9a8d4, #c084fc);
+            transition: width 0.3s ease;
+        }
+
+        nav .nav-links a:hover {
+            color: #f9a8d4;
+        }
+
+        nav .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero .subtitle-greet {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            color: #818cf8;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 30%, #818cf8 60%, #67e8f9 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 6s ease-in-out infinite, fadeInUp 0.8s 0.15s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            max-width: 560px;
+            animation: fadeInUp 0.8s 0.3s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .hero .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2.5rem;
+            animation: fadeInUp 0.8s 0.45s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #c084fc, #818cf8);
+            box-shadow: 0 4px 30px rgba(192, 132, 252, 0.35);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(192, 132, 252, 0.5);
+        }
+
+        .cta-btn.outline {
+            background: transparent;
+            border: 1.5px solid rgba(192, 132, 252, 0.5);
+            box-shadow: none;
+        }
+
+        .cta-btn.outline:hover {
+            border-color: #c084fc;
+            background: rgba(192, 132, 252, 0.08);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s ease-in-out infinite, fadeInUp 0.8s 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .scroll-indicator .mouse {
+            width: 26px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            position: relative;
+        }
+
+        .scroll-indicator .mouse::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            animation: scrollWheel 1.5s ease-in-out infinite;
+        }
+
+        /* ===== Sections Base ===== */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f9a8d4, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #8080a0;
+            font-size: 1rem;
+            margin-bottom: 3.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== Full-Width Section with Banner ===== */
+        .section-full {
+            position: relative;
+            z-index: 1;
+            padding: 0;
+            max-width: none;
+            margin: 0;
+            background-size: cover;
+            background-position: center 15%;
+            background-repeat: no-repeat;
+        }
+
+        .section-banner {
+            position: relative;
+            width: 100%;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+
+        .section-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(to bottom,
+                rgba(10, 10, 26, 0.25) 0%,
+                rgba(10, 10, 26, 0.5) 50%,
+                rgba(10, 10, 26, 0.9) 100%);
+        }
+
+        .section-banner .section-title {
+            position: relative;
+            z-index: 1;
+            font-size: 3rem;
+            color: #fff;
+            -webkit-text-fill-color: #fff;
+            background: none;
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-banner .section-subtitle {
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.1rem;
+            margin-bottom: 0;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-banner .banner-scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            animation: fadeInUp 0.8s 0.6s ease-out, subtleBounce 2.5s ease-in-out infinite;
+        }
+
+        .section-content {
+            position: relative;
+            max-width: none;
+            margin: 0;
+            padding: 5rem 2rem 6rem;
+            background: rgba(10, 10, 26, 0.5);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            transition: background 0.5s ease-out,
+                        backdrop-filter 0.5s ease-out;
+            -webkit-transition: background 0.5s ease-out,
+                               -webkit-backdrop-filter 0.5s ease-out;
+        }
+
+        .section-content.scrolling {
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.06s ease-out,
+                        backdrop-filter 0.06s ease-out;
+            -webkit-transition: background 0.06s ease-out,
+                               -webkit-backdrop-filter 0.06s ease-out;
+        }
+
+        .section-content-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ===== Directory Filter: hide sections ===== */
+        .section-full.filtered-hidden {
+            display: none;
+        }
+
+        .section-full.filtered-active {
+            display: block;
+        }
+
+        /* ===== Back Button ===== */
+        .back-to-directory {
+            position: fixed;
+            top: 100px;
+            left: 2rem;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.3rem;
+            background: rgba(10, 10, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            opacity: 0;
+            transform: translateX(-20px);
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .back-to-directory.visible {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .back-to-directory:hover {
+            border-color: rgba(192, 132, 252, 0.5);
+            background: rgba(30, 30, 60, 0.85);
+            box-shadow: 0 4px 25px rgba(192, 132, 252, 0.2);
+        }
+
+        .back-to-directory .back-arrow {
+            font-size: 1.1rem;
+        }
+
+        .section-content .section-title {
+            font-size: 2rem;
+        }
+
+        /* ===== About Section ===== */
+        .about-profile {
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .about-profile:hover {
+            border-color: rgba(192, 132, 252, 0.25);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-avatar-wrapper {
+            flex-shrink: 0;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(192, 132, 252, 0.4);
+            box-shadow: 0 0 30px rgba(192, 132, 252, 0.15);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .about-profile:hover .about-avatar-wrapper {
+            border-color: rgba(192, 132, 252, 0.7);
+            box-shadow: 0 0 40px rgba(192, 132, 252, 0.25);
+        }
+
+        .about-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .about-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .about-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f0f0f8;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.01em;
+        }
+
+        .about-name-cn {
+            font-weight: 400;
+            color: #9090b8;
+            font-size: 1.3rem;
+            margin-left: 0.5rem;
+        }
+
+        .about-headline {
+            font-size: 1rem;
+            color: #818cf8;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .about-bio {
+            color: #b0b0c8;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .about-bio p {
+            margin-bottom: 1rem;
+        }
+
+        .about-bio p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.8rem;
+        }
+
+        .highlight-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            color: #c0c0d8;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            padding: 0.4rem 1rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .highlight-item:hover {
+            background: rgba(192, 132, 252, 0.08);
+            border-color: rgba(192, 132, 252, 0.25);
+        }
+
+        .highlight-icon {
+            font-size: 0.9rem;
+        }
+
+        /* ===== Contact Section Redesign ===== */
+        .contact-socials {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            max-width: 200px;
+        }
+
+        .contact-platform {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #d0d0e8;
+        }
+
+        .contact-platform-icon {
+            font-size: 1.4rem;
+        }
+
+        .contact-qr-wrapper {
+            width: 140px;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .contact-item:hover .contact-qr-wrapper {
+            border-color: rgba(192, 132, 252, 0.5);
+            box-shadow: 0 8px 32px rgba(192, 132, 252, 0.2);
+        }
+
+        .contact-qr {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .contact-id {
+            font-size: 0.85rem;
+            color: #b0b0c8;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .contact-id small {
+            display: block;
+            color: #707098;
+            font-size: 0.78rem;
+        }
+
+        .contact-phone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 1rem;
+            color: #b0b0c8;
+        }
+
+        .contact-phone .phone-icon {
+            font-size: 1.3rem;
+        }
+
+        .contact-phone .phone-number {
+            font-weight: 600;
+            color: #d0d0e8;
+            letter-spacing: 0.02em;
+        }
+
+        /* ===== About Hub ===== */
+        .about-hub {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .about-hub-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .about-hub-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+        }
+
+        .about-hub-card.edu::before {
+            background: linear-gradient(160deg, rgba(129, 140, 248, 0.12), rgba(192, 132, 252, 0.06));
+        }
+
+        .about-hub-card.life::before {
+            background: linear-gradient(160deg, rgba(249, 168, 212, 0.12), rgba(251, 191, 36, 0.06));
+        }
+
+        .about-hub-card:hover::before {
+            opacity: 1;
+        }
+
+        .about-hub-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .about-hub-card.edu:hover {
+            border-color: rgba(129, 140, 248, 0.4);
+        }
+
+        .about-hub-card.life:hover {
+            border-color: rgba(249, 168, 212, 0.4);
+        }
+
+        .about-hub-icon {
+            font-size: 3rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.4s;
+        }
+
+        .about-hub-card:hover .about-hub-icon {
+            transform: scale(1.15) translateY(-4px);
+        }
+
+        .about-hub-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #e8e8f0;
+            margin-bottom: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-hub-card p {
+            color: #a0a0c0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-hub-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transition: gap 0.3s;
+        }
+
+        .about-hub-card.edu .about-hub-arrow { color: #818cf8; }
+        .about-hub-card.life .about-hub-arrow { color: #f9a8d4; }
+
+        .about-hub-card:hover .about-hub-arrow {
+            gap: 0.8rem;
+        }
+
+        /* ===== Life Grid V2 ===== */
+        .life-grid-v2 {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 2.5rem 3rem;
+        }
+
+        .life-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .life-item .item-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .life-item .item-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.8rem;
+            border-radius: 50px;
+            background: rgba(192, 132, 252, 0.1);
+            color: #c084fc;
+            width: fit-content;
+        }
+
+        .life-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e0e0f0;
+            letter-spacing: -0.01em;
+            margin-top: 0.3rem;
+        }
+
+        .life-item p {
+            font-size: 0.9rem;
+            color: #a0a0b8;
+            line-height: 1.8;
+        }
+
+        .life-item p.highlight {
+            font-size: 1rem;
+            color: #d0d0e8;
+            font-style: italic;
+        }
+
+        /* ===== Directory Grid ===== */
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .dir-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 2.8rem 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dir-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+        }
+
+        .dir-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .dir-card:hover::before {
+            opacity: 1;
+        }
+
+        /* China Tour card */
+        .dir-card.china::before {
+            background: linear-gradient(160deg, rgba(239, 68, 68, 0.12), rgba(251, 191, 36, 0.08), rgba(220, 38, 38, 0.04));
+        }
+        .dir-card.china:hover {
+            border-color: rgba(251, 191, 36, 0.4);
+        }
+
+        /* Sports Experience card */
+        .dir-card.sports::before {
+            background: linear-gradient(160deg, rgba(34, 211, 238, 0.12), rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.04));
+        }
+        .dir-card.sports:hover {
+            border-color: rgba(34, 211, 238, 0.4);
+        }
+
+        /* Random Shares card */
+        .dir-card.random::before {
+            background: linear-gradient(160deg, rgba(192, 132, 252, 0.12), rgba(249, 168, 212, 0.08), rgba(129, 140, 248, 0.04));
+        }
+        .dir-card.random:hover {
+            border-color: rgba(192, 132, 252, 0.4);
+        }
+
+        .dir-card .dir-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.4s;
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .dir-card:hover .dir-icon {
+            transform: scale(1.1) translateY(-4px);
+        }
+
+        .dir-card .dir-number {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dir-card.china .dir-number { color: #fbbf24; }
+        .dir-card.sports .dir-number { color: #22d3ee; }
+        .dir-card.random .dir-number { color: #c084fc; }
+
+        .dir-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e8e8f0;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dir-card p {
+            color: #a0a0c0;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dir-card .dir-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dir-tag {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #c0c0d0;
+            transition: all 0.3s;
+        }
+
+        .dir-card.china:hover .dir-tag {
+            background: rgba(251, 191, 36, 0.08);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .dir-card.sports:hover .dir-tag {
+            background: rgba(34, 211, 238, 0.08);
+            border-color: rgba(34, 211, 238, 0.2);
+        }
+
+        .dir-card.random:hover .dir-tag {
+            background: rgba(192, 132, 252, 0.08);
+            border-color: rgba(192, 132, 252, 0.2);
+        }
+
+        .dir-card .dir-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 1.8rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transition: gap 0.3s;
+        }
+
+        .dir-card.china .dir-arrow { color: #fbbf24; }
+        .dir-card.sports .dir-arrow { color: #22d3ee; }
+        .dir-card.random .dir-arrow { color: #c084fc; }
+
+        .dir-card:hover .dir-arrow {
+            gap: 0.8rem;
+        }
+
+        /* ===== Content Preview Cards ===== */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .preview-card {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-start;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-card .preview-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .preview-card h4 {
+            font-size: 1rem;
+            color: #e0e0f0;
+            margin-bottom: 0.3rem;
+        }
+
+        .preview-card p {
+            color: #9090b0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .preview-card .preview-date {
+            font-size: 0.75rem;
+            color: #606080;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== Quote Section ===== */
+        .quote-section {
+            text-align: center;
+            padding: 8rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-box {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .quote-box blockquote {
+            font-size: 1.5rem;
+            font-weight: 300;
+            font-style: italic;
+            color: #d0d0e8;
+            line-height: 1.5;
+        }
+
+        .quote-box blockquote::before {
+            content: '"';
+            font-size: 4rem;
+            color: #c084fc;
+            display: block;
+            line-height: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .quote-box cite {
+            display: block;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #818cf8;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* ===== Contact / Footer ===== */
+        #contact {
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #606080;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer span {
+            background: linear-gradient(135deg, #f9a8d4, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            25%      { background-position: 100% 0%; }
+            50%      { background-position: 100% 100%; }
+            75%      { background-position: 0% 100%; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40%                     { transform: translateX(-50%) translateY(-10px); }
+            60%                     { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @keyframes scrollWheel {
+            0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(15px); }
+        }
+
+        @keyframes subtleBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(6px); }
+        }
+
+        /* ===== Scroll-Reveal ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .directory-grid {
+                grid-template-columns: 1fr;
+                max-width: 460px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.2rem;
+            }
+            nav .nav-links {
+                gap: 1.2rem;
+            }
+            nav .nav-links a {
+                font-size: 0.85rem;
+            }
+            .about-profile {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 2rem 1.5rem;
+            }
+            .about-avatar-wrapper {
+                width: 130px;
+                height: 130px;
+            }
+            .about-highlights {
+                justify-content: center;
+            }
+            section {
+                padding: 4rem 1.5rem;
+            }
+            .quote-box blockquote {
+                font-size: 1.2rem;
+            }
+            .section-banner {
+                min-height: 320px;
+                padding: 4rem 1.5rem;
+            }
+            .section-banner .section-title {
+                font-size: 2rem;
+            }
+            .section-banner .section-subtitle {
+                font-size: 0.95rem;
+            }
+            .section-content {
+                padding: 3rem 1.5rem 4rem;
+            }
+            .back-to-directory {
+                top: 85px;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.82rem;
+            }
+            .about-hub {
+                grid-template-columns: 1fr;
+                max-width: 460px;
+                margin: 0 auto;
+            }
+            .about-hub-card {
+                padding: 2rem 1.5rem;
+            }
+            .life-grid-v2 {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .contact-socials {
+                gap: 1.5rem;
+            }
+            .contact-qr-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 0.8rem 1rem;
+            }
+            nav .nav-links {
+                gap: 1rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .directory-grid {
+                max-width: 100%;
+            }
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+            .life-grid-v2 {
+                gap: 1.8rem;
+            }
+            .contact-socials {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Starfield Canvas -->
+    <canvas class="starfield" id="starfield"></canvas>
+
+    <!-- Back to Directory Button -->
+    <button class="back-to-directory" id="backToDir" onclick="showAllSections()">
+        <span class="back-arrow">←</span> Back to Directory
+    </button>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">✦ Gloria</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#directory">Directory</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <p class="subtitle-greet">✦ Hello &amp; Welcome ✦</p>
+        <h1>Welcome to<br>Gloria's World</h1>
+        <p class="tagline">
+            A place where creativity meets passion. Explore, dream, and discover
+            the wonders that make life extraordinary.
+        </p>
+        <div class="cta-group">
+            <a href="#about" class="cta-btn">About Me</a>
+            <a href="#directory" class="cta-btn outline">Explore the World</a>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- About Me / Education -->
+    <section id="about">
+        <h2 class="section-title reveal">About Me</h2>
+        <p class="section-subtitle reveal">The path that brought me here</p>
+        <div class="about-profile reveal">
+            <div class="about-avatar-wrapper">
+                <img src="4630123aa0fce46805c3052d33229494.jpg" alt="Gloria" class="about-avatar">
+            </div>
+            <div class="about-info">
+                <h3 class="about-name">Gloria<span class="about-name-cn">（范诗雨 in Chinese）</span></h3>
+                <p class="about-headline">M.A. Candidate in Intercultural Communication in Sports · Beijing Sport University</p>
+                <div class="about-bio">
+                    <p>
+                        I'm Gloria (Fan Shiyu), a second-year Master's candidate at Beijing Sport University,
+                        majoring in Intercultural Communication in Sports.
+                    </p>
+                    <p>
+                        My academic journey began with a Bachelor's in English Teaching, where I picked up a bit
+                        of education, psychology, and linguistics — though, admittedly, much of it has quietly
+                        faded. A love for the Olympic Games inspired me to pivot toward sports for my graduate
+                        studies. It was a leap of passion, and one I have never looked back on.
+                    </p>
+                    <p>
+                        My research focuses on sport and public relations. I'm also deeply interested in
+                        international sports exchange, the sports diplomacy policies of different nations,
+                        and intercultural communication. I have had the privilege of participating in several
+                        major international sporting events, experiences that have reinforced my conviction:
+                        sport is a universal thread that connects people across borders. I believe in its quiet
+                        power to foster empathy, bridge difference, and, in its own way, make the world a
+                        little better.
+                    </p>
+                </div>
+                <div class="about-highlights">
+                    <span class="highlight-item">
+                        <span class="highlight-icon">🎓</span> Beijing Sport University
+                    </span>
+                    <span class="highlight-item">
+                        <span class="highlight-icon">🔬</span> Sport &amp; Public Relations
+                    </span>
+                    <span class="highlight-item">
+                        <span class="highlight-icon">🌍</span> International Sports Events
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Life Beyond Section -->
+    <section id="life">
+        <h2 class="section-title reveal">🌟 Life Off Duty</h2>
+        <p class="section-subtitle reveal">The everyday passions that keep me going</p>
+        <div class="life-grid-v2 reveal">
+            <!-- Travel -->
+            <div class="life-item">
+                <div class="item-icon">🗺️</div>
+                <span class="item-tag">Wanderlust</span>
+                <h4>23 of 34 Chinese provinces explored.</h4>
+                <p>Dreaming of circling the globe — one destination, one dish, one story at a time.</p>
+            </div>
+
+            <!-- Food -->
+            <div class="life-item">
+                <div class="item-icon">🍜</div>
+                <span class="item-tag">Foodie at Heart</span>
+                <h4>Spice &amp; sweets.</h4>
+                <p>Aspiring food blogger. Ultimate dream: travel the world and taste everything it has to offer.</p>
+            </div>
+
+            <!-- Film & Books — wider -->
+            <div class="life-item item-wide">
+                <div class="item-icon">🎬</div>
+                <span class="item-tag">Stories I Love</span>
+                <h4>Detective stories &amp; romance.</h4>
+                <p class="highlight">
+                    I'm drawn to the imperfect endings — the ones that ache a little. Maybe because life itself
+                    is rarely a fairy tale, and there's something honest in that.
+                </p>
+            </div>
+
+            <!-- Music — narrower, same row -->
+            <div class="life-item item-narrow">
+                <div class="item-icon">🎵</div>
+                <span class="item-tag">Soundtrack</span>
+                <h4>No fixed genre. Blues, mostly.</h4>
+                <p>My taste never stays still — but one thing has never changed: <strong>Adele is my favourite singer.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== -->
+    <!-- DIRECTORY: Three Pillars -->
+    <!-- ===================== -->
+    <section id="directory">
+        <h2 class="section-title reveal">📂 Directory</h2>
+        <p class="section-subtitle reveal">Three corners of my world — pick one and dive in</p>
+
+        <div class="directory-grid">
+
+            <!-- 1. China Tour -->
+            <a href="#china-tour" class="dir-card china reveal">
+                <div class="dir-icon">🏯</div>
+                <div class="dir-number">· 01 ·</div>
+                <h3>China Tour</h3>
+                <p>
+                    Journey across the vast landscapes, ancient wonders, and
+                    vibrant cities of China. Every stop tells a story.
+                </p>
+                <div class="dir-tags">
+                    <span class="dir-tag">Travel</span>
+                    <span class="dir-tag">Culture</span>
+                    <span class="dir-tag">Food</span>
+                    <span class="dir-tag">Scenery</span>
+                </div>
+                <span class="dir-arrow">Explore →</span>
+            </a>
+
+            <!-- 2. Sports Experience -->
+            <a href="#sports-experience" class="dir-card sports reveal">
+                <div class="dir-icon">⚽</div>
+                <div class="dir-number">· 02 ·</div>
+                <h3>Sports Experience</h3>
+                <p>
+                    Volunteer, translator, reporter, training assistant —
+                    every role brought me closer to the world of sport.
+                </p>
+                <div class="dir-tags">
+                    <span class="dir-tag">Volunteer</span>
+                    <span class="dir-tag">Translator</span>
+                    <span class="dir-tag">Training</span>
+                    <span class="dir-tag">Try for Fun</span>
+                </div>
+                <span class="dir-arrow">Explore →</span>
+            </a>
+
+            <!-- 3. Random Shares -->
+            <a href="#random-shares" class="dir-card random reveal">
+                <div class="dir-icon">🎲</div>
+                <div class="dir-number">· 03 ·</div>
+                <h3>Random Shares</h3>
+                <p>
+                    Bits and pieces from daily life — thoughts, photos, and
+                    the little things that deserve a moment.
+                </p>
+                <div class="dir-tags">
+                    <span class="dir-tag">Life</span>
+                    <span class="dir-tag">Photos</span>
+                    <span class="dir-tag">Thoughts</span>
+                    <span class="dir-tag">Cooking</span>
+                </div>
+                <span class="dir-arrow">Explore →</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- ===================== -->
+    <!-- CHINA TOUR Section -->
+    <!-- ===================== -->
+    <section class="section-full" id="china-tour" style="background-image: url('img-china-tour.jpg');">
+        <div class="section-banner">
+            <h2 class="section-title reveal">🏯 China Tour</h2>
+            <p class="section-subtitle reveal">23 of 34 provincial regions explored — one city at a time</p>
+            <span class="banner-scroll-hint">SCROLL DOWN</span>
+        </div>
+        <div class="section-content">
+            <div class="section-content-inner">
+                <div class="preview-grid">
+                    <div class="preview-card reveal"><div class="preview-icon">🏯</div><div><h4>Beijing</h4><p>The Imperial Capital — where ancient walls meet modern dreams.</p><div class="preview-date">📍 Beijing</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌃</div><div><h4>Shanghai</h4><p>The Pearl of the Orient — neon skyline, river breeze, endless energy.</p><div class="preview-date">📍 Shanghai</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🥟</div><div><h4>Guangdong</h4><p>Gateway to the South — dim sum mornings, coastal nights.</p><div class="preview-date">📍 Guangdong</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🛶</div><div><h4>Jiangsu</h4><p>Land of Water Towns — canals, gardens, and poetic elegance.</p><div class="preview-date">📍 Jiangsu</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">⛰️</div><div><h4>Shandong</h4><p>Land of Confucius — mountains, seafood, and millennia of wisdom.</p><div class="preview-date">📍 Shandong</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🍵</div><div><h4>Zhejiang</h4><p>Where Poetry Meets Prosperity — silk, tea, and West Lake serenity.</p><div class="preview-date">📍 Zhejiang</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌶️</div><div><h4>Hunan</h4><p>Land of Spice and Soul — fiery flavors, misty mountains.</p><div class="preview-date">📍 Hunan</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🐼</div><div><h4>Sichuan</h4><p>The Land of Abundance — pandas, hot pot, and mountain mists.</p><div class="preview-date">📍 Sichuan</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏙️</div><div><h4>Chongqing</h4><p>Mountain City by the River — fog, spice, and stairways to the sky.</p><div class="preview-date">📍 Chongqing</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🗿</div><div><h4>Shaanxi</h4><p>Cradle of Civilization — terracotta warriors, ancient capitals.</p><div class="preview-date">📍 Shaanxi</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌆</div><div><h4>Hong Kong</h4><p>Where East Meets West — skyline, dim sum, and harbour lights.</p><div class="preview-date">📍 Hong Kong</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🎰</div><div><h4>Macau</h4><p>Portuguese lanes, glittering nights — a pocket of Europe in the East.</p><div class="preview-date">📍 Macau</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌉</div><div><h4>Hubei</h4><p>Heart of the Yangtze — rivers, lakes, and the spirit of Wuhan.</p><div class="preview-date">📍 Hubei</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏮</div><div><h4>Fujian</h4><p>Coast of Tea and Temples — tulou earth buildings, jasmine breeze.</p><div class="preview-date">📍 Fujian</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏺</div><div><h4>Jiangxi</h4><p>Land of Porcelain and Peaks — misty mountains, ancient kilns.</p><div class="preview-date">📍 Jiangxi</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏛️</div><div><h4>Tianjin</h4><p>The Imperial Port — colonial streets, riverside laughter.</p><div class="preview-date">📍 Tianjin</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">❄️</div><div><h4>Heilongjiang</h4><p>The Frozen Frontier — ice castles, Russian echoes, winter magic.</p><div class="preview-date">📍 Heilongjiang</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌲</div><div><h4>Jilin</h4><p>Winter Wonderland — rime forests, crystal snowscapes.</p><div class="preview-date">📍 Jilin</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🐉</div><div><h4>Liaoning</h4><p>The Dragon's Gateway — Manchurian plains, coastal frontiers.</p><div class="preview-date">📍 Liaoning</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏔️</div><div><h4>Anhui</h4><p>Land of Ink and Mist — Yellow Mountain, ancient Hui villages.</p><div class="preview-date">📍 Anhui</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🌿</div><div><h4>Guangxi</h4><p>Where Karst Meets the Sky — limestone peaks, emerald rivers.</p><div class="preview-date">📍 Guangxi</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🐴</div><div><h4>Inner Mongolia</h4><p>Where the Grass Meets the Sky — endless steppes, nomadic soul.</p><div class="preview-date">📍 Inner Mongolia</div></div></div>
+                    <div class="preview-card reveal"><div class="preview-icon">🏯</div><div><h4>Hebei</h4><p>The Northern Embrace — encircling Beijing, from Great Wall to coast.</p><div class="preview-date">📍 Hebei</div></div></div>
+                </div>
+                <p style="text-align:center; margin-top:2rem; color:#818cf8; font-size:0.9rem;">
+                    ✨ Still exploring — more destinations ahead →
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== -->
+    <!-- SPORTS EXPERIENCE Section -->
+    <!-- ===================== -->
+    <section class="section-full" id="sports-experience" style="background-image: url('img-sports.jpg');">
+        <div class="section-banner">
+            <h2 class="section-title reveal">⚽ Sports Experience</h2>
+            <p class="section-subtitle reveal">Sweat, passion, and the love of the game</p>
+            <span class="banner-scroll-hint">SCROLL DOWN</span>
+        </div>
+        <div class="section-content">
+            <div class="section-content-inner">
+                <div class="preview-grid">
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🏂</div>
+                        <div>
+                            <h4>Snowboard &amp; Freeski Big Air</h4>
+                            <p>Soaring through the air at the Big Air Shougang — gravity-defying moments frozen in time.</p>
+                            <div class="preview-date">❄️ Big Air</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">⛸️</div>
+                        <div>
+                            <h4>Short Track Speed Skating</h4>
+                            <p>The razor's edge of speed — blades carving ice, every hundredth of a second counts.</p>
+                            <div class="preview-date">🏟️ Short Track</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🏀</div>
+                        <div>
+                            <h4>Basketball 3×3</h4>
+                            <p>Fast, fierce, and half-court. The urban rhythm of three-on-three — pure street energy.</p>
+                            <div class="preview-date">🏀 3×3</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🏃</div>
+                        <div>
+                            <h4>Track &amp; Field</h4>
+                            <p>From the starting blocks to the finish line — the raw beauty of athletics in its purest form.</p>
+                            <div class="preview-date">🏅 Athletics</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🏓</div>
+                        <div>
+                            <h4>Pickleball</h4>
+                            <p>The fastest-growing sport I've fallen for — tennis, ping-pong, and badminton all rolled into one addictive game.</p>
+                            <div class="preview-date">🏓 Pickleball</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">☯️</div>
+                        <div>
+                            <h4>Tai Chi</h4>
+                            <p>Slow movements, deep breaths — finding stillness and strength in the ancient art of Taijiquan.</p>
+                            <div class="preview-date">☯️ Tai Chi</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🧘</div>
+                        <div>
+                            <h4>Baduanjin</h4>
+                            <p>Eight brocades, eight flows of energy — a centuries-old practice that resets both body and mind.</p>
+                            <div class="preview-date">🧘 Baduanjin</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🧗</div>
+                        <div>
+                            <h4>Sports Climbing</h4>
+                            <p>Every hold is a puzzle, every route a conversation between strength and strategy.</p>
+                            <div class="preview-date">🧗 Sports Climbing</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">💪</div>
+                        <div>
+                            <h4>Bodybuilding &amp; Fitness</h4>
+                            <p>Discipline, form, and the quiet satisfaction of getting a little stronger every day.</p>
+                            <div class="preview-date">💪 Fitness</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🏐</div>
+                        <div>
+                            <h4>Air Volleyball</h4>
+                            <p>Lighter, softer, and full of laughter — the most unexpected joy on court.</p>
+                            <div class="preview-date">🏐 Air Volleyball</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align:center; margin-top:2rem; color:#22d3ee; font-size:0.9rem;">
+                    ✨ Still exploring — more sports to come →
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== -->
+    <!-- RANDOM SHARES Section -->
+    <!-- ===================== -->
+    <section class="section-full" id="random-shares" style="background-image: url('img-random.jpg');">
+        <div class="section-banner">
+            <h2 class="section-title reveal">🎲 Random Shares</h2>
+            <p class="section-subtitle reveal">A little bit of everything that makes life interesting</p>
+            <span class="banner-scroll-hint">SCROLL DOWN</span>
+        </div>
+        <div class="section-content">
+            <div class="section-content-inner">
+                <div class="preview-grid">
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">📸</div>
+                        <div>
+                            <h4>Photo Dump: Golden Hour</h4>
+                            <p>Not just sunsets — stolen moments, spontaneous selfies, and the tiny beauties that catch my eye.</p>
+                            <div class="preview-date">📷 Photography</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">💭</div>
+                        <div>
+                            <h4>Late Night Thoughts</h4>
+                            <p>Random reflections on life, growth, and the little things we often overlook.</p>
+                            <div class="preview-date">✍️ Musings</div>
+                        </div>
+                    </div>
+                    <div class="preview-card reveal">
+                        <div class="preview-icon">🍳</div>
+                        <div>
+                            <h4>Kitchen Experiments</h4>
+                            <p>Trying new recipes, failing gloriously, and occasionally making something delicious.</p>
+                            <div class="preview-date">👩‍🍳 Cooking</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align:center; margin-top:2rem; color:#c084fc; font-size:0.9rem;">
+                    ✨ Still exploring — more to share →
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section -->
+    <div class="quote-section">
+        <div class="quote-box reveal">
+            <blockquote>
+                The world is full of magic things, patiently waiting for our senses to grow sharper.
+            </blockquote>
+            <cite>— W.B. Yeats</cite>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title reveal">Let's Connect</h2>
+
+        <div class="contact-socials reveal">
+            <!-- WeChat -->
+            <div class="contact-item">
+                <div class="contact-platform">
+                    <span class="contact-platform-icon">💬</span> WeChat
+                </div>
+                <div class="contact-qr-wrapper">
+                    <img src="43788565b4d84fa01b724b034549bf57.jpg" alt="WeChat QR" class="contact-qr">
+                </div>
+                <div class="contact-id">
+                    World-Peace-Forever
+                    <small>自由的格鲁波市民</small>
+                </div>
+            </div>
+
+            <!-- Instagram -->
+            <div class="contact-item">
+                <div class="contact-platform">
+                    <span class="contact-platform-icon">📷</span> Instagram
+                </div>
+                <div class="contact-qr-wrapper">
+                    <img src="6f4ee3644414635b0f11e787ae5bf72d.jpg" alt="Instagram QR" class="contact-qr">
+                </div>
+                <div class="contact-id">
+                    Gloria_shiyu
+                    <small>范fàn&ensp;诗shī&ensp;雨yǔ</small>
+                </div>
+            </div>
+
+            <!-- TikTok -->
+            <div class="contact-item">
+                <div class="contact-platform">
+                    <span class="contact-platform-icon">🎵</span> TikTok
+                </div>
+                <div class="contact-qr-wrapper">
+                    <img src="cec4c295ecd440ec6980309320715cd3.jpg" alt="TikTok QR" class="contact-qr">
+                </div>
+                <div class="contact-id">
+                    FANtastic.0064
+                    <small>四季抹茶</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-phone reveal">
+            <span class="phone-icon">📞</span>
+            <span class="phone-number">15371129866</span>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Made with <span>♥</span> · &copy; 2026 <span>Gloria's World</span> · All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        /* ===== Starfield ===== */
+        (function() {
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
+            let stars = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function createStars(count) {
+                stars = [];
+                for (let i = 0; i < count; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        r: Math.random() * 1.6 + 0.4,
+                        speed: Math.random() * 0.008 + 0.002,
+                        phase: Math.random() * Math.PI * 2,
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (const star of stars) {
+                    const twinkle = Math.sin(Date.now() * star.speed + star.phase);
+                    const alpha = 0.15 + (twinkle + 1) / 2 * 0.7;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.fill();
+                    if (star.r > 1.2) {
+                        ctx.beginPath();
+                        ctx.arc(star.x, star.y, star.r * 3, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(192, 132, 252, ${alpha * 0.12})`;
+                        ctx.fill();
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+
+            function init() {
+                resize();
+                createStars(Math.floor((canvas.width * canvas.height) / 1800));
+                draw();
+            }
+
+            window.addEventListener('resize', () => {
+                resize();
+                createStars(Math.floor((canvas.width * canvas.height) / 1800));
+            });
+
+            init();
+        })();
+
+        /* ===== Scroll Reveal ===== */
+        (function() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            reveals.forEach(el => observer.observe(el));
+        })();
+
+        /* ===== Directory Filter: Show/Hide Sections ===== */
+        const dirSection = document.getElementById('directory');
+        const allSections = document.querySelectorAll('.section-full');
+        const backBtn = document.getElementById('backToDir');
+        let activeFilter = null;
+
+        // Map directory card href → section ID
+        const cardMap = {
+            '#china-tour': 'china-tour',
+            '#sports-experience': 'sports-experience',
+            '#random-shares': 'random-shares',
+        };
+
+        function filterSection(sectionId) {
+            activeFilter = sectionId;
+            allSections.forEach(sec => {
+                if (sec.id === sectionId) {
+                    sec.classList.remove('filtered-hidden');
+                    sec.classList.add('filtered-active');
+                } else {
+                    sec.classList.add('filtered-hidden');
+                    sec.classList.remove('filtered-active');
+                }
+            });
+            dirSection.style.display = 'none';
+            backBtn.classList.add('visible');
+            // Scroll to top of the section
+            const target = document.getElementById(sectionId);
+            if (target) {
+                setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+            }
+        }
+
+        window.showAllSections = function() {
+            activeFilter = null;
+            allSections.forEach(sec => {
+                sec.classList.remove('filtered-hidden', 'filtered-active');
+            });
+            dirSection.style.display = '';
+            backBtn.classList.remove('visible');
+            // Scroll to directory
+            dirSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        // Intercept directory card clicks
+        document.querySelectorAll('.dir-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && cardMap[href]) {
+                    e.preventDefault();
+                    filterSection(cardMap[href]);
+                }
+            });
+        });
+
+        // Clicking "Directory" in nav resets the filter
+        const navDirLink = document.querySelector('nav a[href="#directory"]');
+        if (navDirLink) {
+            navDirLink.addEventListener('click', function(e) {
+                if (activeFilter) {
+                    e.preventDefault();
+                    showAllSections();
+                }
+            });
+        }
+
+        /* ===== Scroll Blur — blur only while moving, sharp when still ===== */
+        (function() {
+            const contents = document.querySelectorAll('.section-content');
+            let timer = null;
+            const delay = 400; // ms after scroll stops to clear blur
+
+            window.addEventListener('scroll', () => {
+                contents.forEach(el => el.classList.add('scrolling'));
+                if (timer) clearTimeout(timer);
+                timer = setTimeout(() => {
+                    contents.forEach(el => el.classList.remove('scrolling'));
+                }, delay);
+            }, { passive: true });
+        })();
+
+    </script>
+
+</body>
+</html>
